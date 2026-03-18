@@ -38,7 +38,7 @@ class ClassMapGenerator
     /**
      * @var FileList|null
      */
-    private $scannedFiles = null;
+    private $scannedFiles;
 
     /**
      * @var ClassMap
@@ -276,9 +276,6 @@ class ClassMapGenerator
      * Checks if the given path is absolute
      *
      * @see Composer\Util\Filesystem::isAbsolutePath
-     *
-     * @param  string $path
-     * @return bool
      */
     private static function isAbsolutePath(string $path): bool
     {
@@ -292,7 +289,6 @@ class ClassMapGenerator
      * @see Composer\Util\Filesystem::normalizePath
      *
      * @param  string $path Path to the file or directory
-     * @return string
      */
     private static function normalizePath(string $path): string
     {
