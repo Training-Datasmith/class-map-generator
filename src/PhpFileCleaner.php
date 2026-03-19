@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -98,7 +100,7 @@ class PhpFileCleaner
                     continue;
                 }
 
-                if ($char === "<" && $this->peek('<') && $this->match('{<<<[ \t]*+([\'"]?)([a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*+)\\1(?:\r\n|\n|\r)}A', $match)) {
+                if ($char === '<' && $this->peek('<') && $this->match('{<<<[ \t]*+([\'"]?)([a-zA-Z_\x80-\xff][a-zA-Z0-9_\x80-\xff]*+)\\1(?:\r\n|\n|\r)}A', $match)) {
                     $this->index += \strlen($match[0]);
                     $this->skipHeredoc($match[2]);
                     $clean .= 'null';
@@ -204,7 +206,7 @@ class PhpFileCleaner
             // check if we find the delimiter after some spaces/tabs
             switch ($this->contents[$this->index]) {
                 case "\t":
-                case " ":
+                case ' ':
                     $this->index += 1;
                     continue 2;
                 case $firstDelimiterChar:

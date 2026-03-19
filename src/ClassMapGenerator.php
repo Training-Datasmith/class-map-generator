@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -20,7 +22,6 @@ namespace Composer\ClassMapGenerator;
 
 use Composer\Pcre\Preg;
 use Symfony\Component\Finder\Finder;
-use Composer\IO\IOInterface;
 
 /**
  * ClassMapGenerator
@@ -56,7 +57,7 @@ class ClassMapGenerator
     public function __construct(array $extensions = ['php', 'inc'])
     {
         $this->extensions = $extensions;
-        $this->classMap = new ClassMap;
+        $this->classMap = new ClassMap();
         $this->streamWrappersRegex = sprintf('{^(?:%s)://}', implode('|', array_map('preg_quote', stream_get_wrappers())));
     }
 
@@ -69,7 +70,7 @@ class ClassMapGenerator
      */
     public function avoidDuplicateScans(?FileList $scannedFiles = null): self
     {
-        $this->scannedFiles = $scannedFiles ?? new FileList;
+        $this->scannedFiles = $scannedFiles ?? new FileList();
 
         return $this;
     }
@@ -326,7 +327,9 @@ class ClassMapGenerator
         }
 
         // ensure c: is normalized to C:
-        $prefix = Preg::replaceCallback('{(?:^|://)[a-z]:$}i', function (array $m) { return strtoupper((string) $m[0]); }, $prefix);
+        $prefix = Preg::replaceCallback('{(?:^|://)[a-z]:$}i', function (array $m) {
+            return strtoupper((string) $m[0]);
+        }, $prefix);
 
         return $prefix.$absolute.implode('/', $parts);
     }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 /*
  * This file is part of Composer.
@@ -12,8 +14,8 @@
 
 namespace Composer\ClassMapGenerator;
 
-use RuntimeException;
 use Composer\Pcre\Preg;
+use RuntimeException;
 
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
