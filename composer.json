@@ -28,12 +28,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Composer\\ClassMapGenerator\\": "src"
+            "Composer\\Class_Map_Generator\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Composer\\ClassMapGenerator\\": "tests"
+            "Composer\\Class_Map_Generator\\": "tests"
         }
     },
     "extra": {
