@@ -53,13 +53,17 @@ class Class_Map_Generator
         $this->stream_wrappers_regex = sprintf('{^(?:%s)://}', implode('|', array_map('preg_quote', stream_get_wrappers())));
     }
     /**
-     * When calling scanPaths repeatedly with paths that may overlap, calling this will ensure that the same class is never scanned twice
+     * Enables deduplication so that the same class file is never scanned twice across multiple
+     * {@see self::scan_paths()} calls on overlapping directory trees.
      *
-     * You can provide your own FileList instance or use the default one if you pass no argument
+     * Pass your own {@see File_List} instance to share the seen-file registry across multiple
+     * generator instances; omit the argument to use a new private registry.
      *
-     * @return $this
+     * @param File_List|null $scanned_files optional shared file registry; a new one is created if null
+     *
+     * @return static fluent interface
      */
-    public function avoid_duplicate_scans(?File_List $scanned_files = null): self
+    public function avoid_duplicate_scans(?File_List $scanned_files = null): static
     {
         $this->scanned_files = $scanned_files ?? new File_List();
         return $this;
@@ -72,12 +76,18 @@ class Class_Map_Generator
      *
      * @throws \RuntimeException When the path is neither an existing file nor directory
      */
+    /** @param string|\Traversable<\SplFileInfo>|array<\SplFileInfo> $path */
     public static function create_map($path): array
     {
         $generator = new self();
         $generator->scan_paths($path);
         return $generator->get_class_map()->get_map();
     }
+    /**
+     * Returns the accumulated class map built by previous {@see self::scan_paths()} calls.
+     *
+     * @return Class_Map the class map containing all discovered class-to-file mappings
+     */
     public function get_class_map(): Class_Map
     {
         return $this->class_map;
@@ -93,6 +103,7 @@ class Class_Map_Generator
      *
      * @throws \RuntimeException When the path is neither an existing file nor directory
      */
+    /** @param string|\Traversable<\SplFileInfo>|array<\SplFileInfo> $path */
     public function scan_paths($path, ?string $excluded = null, string $autoload_type = 'classmap', ?string $namespace = null, array $excluded_dirs = []): void
     {
         if (!in_array($autoload_type, ['psr-0', 'psr-4', 'classmap'], true)) {
