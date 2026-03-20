@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of Composer.
  *
@@ -11,21 +10,19 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Composer\ClassMapGenerator;
+namespace Composer\Class_Map_Generator;
 
 /**
  * Contains a list of files which were scanned to generate a classmap
  *
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class FileList
+class File_List
 {
     /**
      * @var array<non-empty-string, true>
      */
     public $files = [];
-
     /**
      * @param non-empty-string $path
      */
@@ -33,7 +30,6 @@ class FileList
     {
         $this->files[$path] = true;
     }
-
     /**
      * @param non-empty-string $path
      */

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /*
  * This file is part of Composer.
  *
@@ -11,41 +10,35 @@ declare(strict_types=1);
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-namespace Composer\ClassMapGenerator;
+namespace Composer\Class_Map_Generator;
 
 use Composer\Pcre\Preg;
-
 /**
  * @author Jordi Boggiano <j.boggiano@seld.be>
  */
-class ClassMap implements \Countable
+class Class_Map implements \Countable
 {
     /**
      * @var array<class-string, non-empty-string>
      */
     public $map = [];
-
     /**
      * @var array<class-string, array<non-empty-string>>
      */
-    private $ambiguousClasses = [];
-
+    private $ambiguous_classes = [];
     /**
      * @var array<string, array<array{warning: string, className: string}>>
      */
-    private $psrViolations = [];
-
+    private $psr_violations = [];
     /**
      * Returns the class map, which is a list of paths indexed by class name
      *
      * @return array<class-string, non-empty-string>
      */
-    public function getMap(): array
+    public function get_map(): array
     {
         return $this->map;
     }
-
     /**
      * Returns warning strings containing details about PSR-0/4 violations that were detected
      *
@@ -57,17 +50,15 @@ class ClassMap implements \Countable
      *
      * @return string[]
      */
-    public function getPsrViolations(): array
+    public function get_psr_violations(): array
     {
-        if (\count($this->psrViolations) === 0) {
+        if (\count($this->psr_violations) === 0) {
             return [];
         }
-
         return array_map(static function (array $violation): string {
             return $violation['warning'];
-        }, array_merge(...array_values($this->psrViolations)));
+        }, array_merge(...array_values($this->psr_violations)));
     }
-
     /**
      * A map of class names to their list of ambiguous paths
      *
@@ -84,29 +75,25 @@ class ClassMap implements \Countable
      *
      * @return array<class-string, array<non-empty-string>>
      */
-    public function getAmbiguousClasses($duplicatesFilter = '{/(test|fixture|example|stub)s?/}i'): array
+    public function get_ambiguous_classes($duplicates_filter = '{/(test|fixture|example|stub)s?/}i'): array
     {
-        if (false === $duplicatesFilter) {
-            return $this->ambiguousClasses;
+        if (false === $duplicates_filter) {
+            return $this->ambiguous_classes;
         }
-
-        if (true === $duplicatesFilter) {
+        if (true === $duplicates_filter) {
             throw new \InvalidArgumentException('$duplicatesFilter should be false or a string with a valid regex, got true.');
         }
-
-        $ambiguousClasses = [];
-        foreach ($this->ambiguousClasses as $class => $paths) {
-            $paths = array_filter($paths, function ($path) use ($duplicatesFilter): bool {
-                return !Preg::isMatch($duplicatesFilter, strtr($path, '\\', '/'));
+        $ambiguous_classes = [];
+        foreach ($this->ambiguous_classes as $class => $paths) {
+            $paths = array_filter($paths, function ($path) use ($duplicates_filter): bool {
+                return !Preg::is_match($duplicates_filter, strtr($path, '\\', '/'));
             });
             if (\count($paths) > 0) {
-                $ambiguousClasses[$class] = array_values($paths);
+                $ambiguous_classes[$class] = array_values($paths);
             }
         }
-
-        return $ambiguousClasses;
+        return $ambiguous_classes;
     }
-
     /**
      * Sorts the class map alphabetically by class names
      */
@@ -114,71 +101,59 @@ class ClassMap implements \Countable
     {
         ksort($this->map);
     }
-
     /**
      * @param class-string $className
      * @param non-empty-string $path
      */
-    public function addClass(string $className, string $path): void
+    public function add_class(string $class_name, string $path): void
     {
-        unset($this->psrViolations[strtr($path, '\\', '/')]);
-
-        $this->map[$className] = $path;
+        unset($this->psr_violations[strtr($path, '\\', '/')]);
+        $this->map[$class_name] = $path;
     }
-
     /**
      * @param class-string $className
      * @return non-empty-string
      */
-    public function getClassPath(string $className): string
+    public function get_class_path(string $class_name): string
     {
-        if (!isset($this->map[$className])) {
-            throw new \OutOfBoundsException('Class '.$className.' is not present in the map');
+        if (!isset($this->map[$class_name])) {
+            throw new \OutOfBoundsException('Class ' . $class_name . ' is not present in the map');
         }
-
-        return $this->map[$className];
+        return $this->map[$class_name];
     }
-
     /**
      * @param class-string $className
      */
-    public function hasClass(string $className): bool
+    public function has_class(string $class_name): bool
     {
-        return isset($this->map[$className]);
+        return isset($this->map[$class_name]);
     }
-
-    public function addPsrViolation(string $warning, string $className, string $path): void
+    public function add_psr_violation(string $warning, string $class_name, string $path): void
     {
         $path = rtrim(strtr($path, '\\', '/'), '/');
-
-        $this->psrViolations[$path][] = ['warning' => $warning, 'className' => $className];
+        $this->psr_violations[$path][] = ['warning' => $warning, 'className' => $class_name];
     }
-
-    public function clearPsrViolationsByPath(string $pathPrefix): void
+    public function clear_psr_violations_by_path(string $path_prefix): void
     {
-        $pathPrefix = rtrim(strtr($pathPrefix, '\\', '/'), '/');
-
-        foreach ($this->psrViolations as $path => $violations) {
-            if ($path === $pathPrefix || 0 === \strpos($path, $pathPrefix.'/')) {
-                unset($this->psrViolations[$path]);
+        $path_prefix = rtrim(strtr($path_prefix, '\\', '/'), '/');
+        foreach ($this->psr_violations as $path => $violations) {
+            if ($path === $path_prefix || 0 === \strpos($path, $path_prefix . '/')) {
+                unset($this->psr_violations[$path]);
             }
         }
     }
-
     /**
      * @param class-string $className
      * @param non-empty-string $path
      */
-    public function addAmbiguousClass(string $className, string $path): void
+    public function add_ambiguous_class(string $class_name, string $path): void
     {
-        $this->ambiguousClasses[$className][] = $path;
+        $this->ambiguous_classes[$class_name][] = $path;
     }
-
     public function count(): int
     {
         return \count($this->map);
     }
-
     /**
      * Get the raw psr violations
      *
@@ -186,8 +161,8 @@ class ClassMap implements \Countable
      * and the offending class name.
      * @return array<string, array<array{warning: string, className: string}>>
      */
-    public function getRawPsrViolations(): array
+    public function get_raw_psr_violations(): array
     {
-        return $this->psrViolations;
+        return $this->psr_violations;
     }
 }
